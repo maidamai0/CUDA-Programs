@@ -93,9 +93,9 @@ int main(int argc,char *argv[])
 	uint iter    = (argc > 5) ? atoi(argv[5]) : 10000; // this for timing
 	uint size = nx*ny;
 
-	cx::ok(cudaSetDevice(0));  // Choose which GPU to run on
+        cx::cudaOK(cudaSetDevice(0));  // Choose which GPU to run on
 
-	thrustHvec<uchar> a(size);
+        thrustHvec<uchar> a(size);
 	thrustHvec<uchar> b(size);
 	thrustDvec<uchar> dev_a(size);
 	thrustDvec<uchar> dev_b(size);

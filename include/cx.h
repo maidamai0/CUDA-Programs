@@ -131,9 +131,9 @@ namespace cx {
 		return 0;
 	}
 	// this during devlopment
-	#define ok(cuda_call) codecheck((cuda_call), __FILE__, __LINE__,#cuda_call) 
+	#define cudaOK(cuda_call) codecheck((cuda_call), __FILE__, __LINE__,#cuda_call) 
 	// or this for final release code
-	//#define ok(cuda_call) cuda_call;
+	//#define cudaOK(cuda_call) cuda_call;
 
 #ifdef __CUDACC__
 	// device only function smallest power of 2 >= n

@@ -152,9 +152,9 @@ int main(int argc,char *argv[])
 
 	// device buffer for random generator state for each threads.
 	curandState *dstates;  // load random number states to device array
-	cx::ok(cudaMalloc((void **)&dstates,statesize*sizeof(curandState)));
+        cx::cudaOK(cudaMalloc((void **)&dstates, statesize * sizeof(curandState)));
 
-	cx::timer tim;
+        cx::timer tim;
 	setup_randstates<<<blocks,threads>>>(dstates,nxby2,ny,seed);
 	cudaDeviceSynchronize();
 

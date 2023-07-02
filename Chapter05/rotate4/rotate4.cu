@@ -97,9 +97,9 @@ int main(int argc,char *argv[])
 	for(int k=0;k<iter;k++){
 		rotate4<<<blocks,threads>>>(dev_b.data().get(),atex.tex,angle,mx,my,scale);
 	}
-	cx::ok(cudaGetLastError());
-	cx::ok(cudaDeviceSynchronize());
-	double t1 = tim.lap_ms();
+        cx::cudaOK(cudaGetLastError());
+        cx::cudaOK(cudaDeviceSynchronize());
+        double t1 = tim.lap_ms();
 
 	b = dev_b; // get results
 	cx::write_raw(argv[2],b.data(),bsize);  // NB save rotated image as RGBA for simplicity

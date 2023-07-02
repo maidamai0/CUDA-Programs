@@ -366,9 +366,9 @@ int do_phantom(int argc,char *argv[])
 		phantom<<<blocks,threads >>>(dev_zdzmap.data().get(),dev_vfill.data().get(),dev_vfill2.data().get(),
 			roi,dev_good.data().get(),state.data().get(),tries,savevol);
 	}
-	cx::ok(cudaPeekAtLastError());
-	cx::ok(cudaDeviceSynchronize());
-	tim.add();
+        cx::cudaOK(cudaPeekAtLastError());
+        cx::cudaOK(cudaDeviceSynchronize());
+        tim.add();
 	double all_good = thrust::reduce(dev_good.begin(),dev_good.end());
 	double eff = 100.0*all_good/(double)ngen_all;
 
@@ -473,16 +473,16 @@ int main(int argc,char *argv[])
 		tim.start();
 		for(int k=0;k<passes;k++){
 			voxgen_doi<<< blocks,threads >>>(dev_map.data().get(), dev_good.data().get(), roi, state.data().get(), tries);
-			cx::ok(cudaPeekAtLastError()); 
-			cx::ok(cudaDeviceSynchronize());
-		}
+                        cx::cudaOK(cudaPeekAtLastError());
+                        cx::cudaOK(cudaDeviceSynchronize());
+                }
 		tim.add();
 		find_spot_doi<<<zNum,cryNum >>>(dev_map.data().get(), dev_spot.data().get(), roi);
 
-		cx::ok(cudaPeekAtLastError());
-		cx::ok(cudaDeviceSynchronize());
+                cx::cudaOK(cudaPeekAtLastError());
+                cx::cudaOK(cudaDeviceSynchronize());
 
-		double all_good = thrust::reduce(dev_good.begin(),dev_good.end());
+                double all_good = thrust::reduce(dev_good.begin(),dev_good.end());
 		double eff = 100.0*all_good/(double)ngen_all;
 
 		io.reset();

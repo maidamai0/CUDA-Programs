@@ -65,12 +65,11 @@ template <typename T> class txs1D {
 		n = m; tex = 0; carray = nullptr;
 
 		cudaChannelFormatDesc cd = cudaCreateChannelDesc<T>();
-		cx::ok(cudaMallocArray(&carray,&cd,n.x,1,arrayType));
+                cx::cudaOK(cudaMallocArray(&carray, &cd, n.x, 1, arrayType));
 
-		if(data != nullptr){
-			cx::ok(cudaMemcpyToArray(carray,0,0,data,n.x*sizeof(T),
-				cudaMemcpyHostToDevice));
-		}
+                if(data != nullptr){
+                  cx::cudaOK(cudaMemcpyToArray(carray, 0, 0, data, n.x * sizeof(T), cudaMemcpyHostToDevice));
+                }
 
 		cudaResourceDesc rd ={};  // make ResourceDesc
 		rd.resType = cudaResourceTypeArray;
@@ -82,30 +81,28 @@ template <typename T> class txs1D {
 		td.filterMode     = filtermode;
 		td.readMode       = readmode; 
 		td.normalizedCoords = normmode;
-		cx::ok(cudaCreateTextureObject(&tex,&rd,&td,nullptr));
-	}
+                cx::cudaOK(cudaCreateTextureObject(&tex, &rd, &td, nullptr));
+        }
 
 	txs1D(const txs1D &txs2){ n.x = txs2.n.x; carray = nullptr; tex = txs2.tex; }
 
 	void copyTo(T *data) {
-		if(data != nullptr && carray != nullptr) cx::ok(
-			cudaMemcpyToArray(carray,0,0,data,n.x*sizeof(T),
-				cudaMemcpyHostToDevice));
-		return;
+                if (data != nullptr && carray != nullptr)
+                        cx::cudaOK(cudaMemcpyToArray(carray, 0, 0, data, n.x * sizeof(T), cudaMemcpyHostToDevice));
+                return;
 	}
 
 	void copyFrom(T *data) {
-		if(data != nullptr && carray != nullptr) cx::ok(
-			cudaMemcpyFromArray(data,carray,0,0,n.x*sizeof(T),
-				cudaMemcpyDeviceToHost));
-		return;
+                if (data != nullptr && carray != nullptr)
+                        cx::cudaOK(cudaMemcpyFromArray(data, carray, 0, 0, n.x * sizeof(T), cudaMemcpyDeviceToHost));
+                return;
 	}
 
 	~txs1D() {
 		if(carray != nullptr){
-			if(tex != 0) cx::ok(cudaDestroyTextureObject(tex));
-			cx::ok(cudaFreeArray(carray));
-		}
+                        if (tex != 0) cx::cudaOK(cudaDestroyTextureObject(tex));
+                        cx::cudaOK(cudaFreeArray(carray));
+                }
 	}
 };  // end class txs1D
 
@@ -125,11 +122,12 @@ template <typename T> class txs2D {
 	{
 		n = m; tex = 0; carray = nullptr;
 		cudaChannelFormatDesc cd = cudaCreateChannelDesc<T>();
-		cx::ok(cudaMallocArray(&carray,&cd,n.x,n.y,arrayType));
+                cx::cudaOK(cudaMallocArray(&carray, &cd, n.x, n.y, arrayType));
 
-		if(data != nullptr){
-			cx::ok(cudaMemcpyToArray(carray,0,0,data,n.x*n.y*sizeof(T),cudaMemcpyHostToDevice));
-		}
+                if(data != nullptr){
+                        cx::cudaOK(
+                            cudaMemcpyToArray(carray, 0, 0, data, n.x * n.y * sizeof(T), cudaMemcpyHostToDevice));
+                }
 
 		cudaResourceDesc rd ={};  // make ResourceDesc
 		rd.resType = cudaResourceTypeArray;
@@ -142,26 +140,30 @@ template <typename T> class txs2D {
 		td.filterMode     = filtermode;
 		td.readMode       =  readmode;
 		td.normalizedCoords = normmode;
-		cx::ok(cudaCreateTextureObject(&tex,&rd,&td,nullptr));
-	}
+                cx::cudaOK(cudaCreateTextureObject(&tex, &rd, &td, nullptr));
+        }
 
 	txs2D(const txs2D &txs2){ n = txs2.n; carray = nullptr; tex = txs2.tex; }
 
 	void copyTo(T *data) {
-		if(data != nullptr && carray != nullptr) cx::ok(cudaMemcpyToArray(carray,0,0,data,n.x*n.y*sizeof(T),cudaMemcpyHostToDevice));
-		return;
+                if (data != nullptr && carray != nullptr)
+                        cx::cudaOK(
+                            cudaMemcpyToArray(carray, 0, 0, data, n.x * n.y * sizeof(T), cudaMemcpyHostToDevice));
+                return;
 	}
 
 	void copyFrom(T *data) {
-		if(data != nullptr && carray != nullptr) cx::ok(cudaMemcpyFromArray(data,carray,0,0,n.x*n.y*sizeof(T),cudaMemcpyDeviceToHost));
-		return;
+                if (data != nullptr && carray != nullptr)
+                        cx::cudaOK(
+                            cudaMemcpyFromArray(data, carray, 0, 0, n.x * n.y * sizeof(T), cudaMemcpyDeviceToHost));
+                return;
 	}
 
 	~txs2D() {
 		if(carray != nullptr){
-			if(tex != 0) cx::ok(cudaDestroyTextureObject(tex));
-			cx::ok(cudaFreeArray(carray));
-		}
+                        if (tex != 0) cx::cudaOK(cudaDestroyTextureObject(tex));
+                        cx::cudaOK(cudaFreeArray(carray));
+                }
 	}
 };  // end txs2D
 
@@ -182,8 +184,8 @@ template <typename T> class txs3D {
 		cp.dstArray = carray;
 		cp.extent   = make_cudaExtent(n.x,n.y,n.z);
 		cp.kind     = copykind;
-		cx::ok(cudaMemcpy3D(&cp));
-	}
+                cx::cudaOK(cudaMemcpy3D(&cp));
+        }
 
 	txs3D(int3 m, T *data, cudaTextureFilterMode filtermode, 
 		cudaTextureAddressMode addressmode, cudaTextureReadMode readmode, 
@@ -192,9 +194,9 @@ template <typename T> class txs3D {
 		n = m; tex = 0; carray = nullptr;
 
 		cudaChannelFormatDesc cd = cudaCreateChannelDesc<T>();
-		cudaExtent cx ={(size_t)n.x,(size_t)n.y,(size_t)n.z}; 
-		cx::ok(cudaMalloc3DArray(&carray,&cd,cx,arrayType));
-		if(data != nullptr) copy3D(data,cudaMemcpyHostToDevice);
+		cudaExtent cx ={(size_t)n.x,(size_t)n.y,(size_t)n.z};
+                cx::cudaOK(cudaMalloc3DArray(&carray, &cd, cx, arrayType));
+                if(data != nullptr) copy3D(data,cudaMemcpyHostToDevice);
 
 		cudaResourceDesc rd ={};  // make ResourceDesc
 		rd.resType = cudaResourceTypeArray;
@@ -208,8 +210,8 @@ template <typename T> class txs3D {
 		td.filterMode     = filtermode;
 		td.readMode       =  readmode;
 		td.normalizedCoords = normmode;
-		cx::ok(cudaCreateTextureObject(&tex,&rd,&td,nullptr));
-	}
+                cx::cudaOK(cudaCreateTextureObject(&tex, &rd, &td, nullptr));
+        }
 
 	txs3D(const txs3D &txs2){ n = txs2.n; carray = nullptr;  tex = txs2.tex; }
 
@@ -225,9 +227,9 @@ template <typename T> class txs3D {
 
 	~txs3D() {
 		if(carray != nullptr) {
-			if(tex != 0) cx::ok(cudaDestroyTextureObject(tex));
-			cx::ok(cudaFreeArray(carray));
-		}
+                        if (tex != 0) cx::cudaOK(cudaDestroyTextureObject(tex));
+                        cx::cudaOK(cudaFreeArray(carray));
+                }
 	}
 };  // end txs3D
 

@@ -94,10 +94,10 @@ int main(int argc,char *argv[])
 	dim3 threads ={16,16,1};
 	dim3 blocks ={(uint)(mx+15)/16,(uint)(my+15)/16,1};
 	rotate4<<<blocks,threads>>>(dev_b.data().get(),atex.tex,angle,mx,my,scale);
-	cx::ok(cudaGetLastError());
-	cx::ok(cudaDeviceSynchronize());
+        cx::cudaOK(cudaGetLastError());
+        cx::cudaOK(cudaDeviceSynchronize());
 
-	b = dev_b; // get results
+        b = dev_b; // get results
 
 	Mat out_image(my,mx,CV_8UC3,Scalar(0));  // NB rows,cols for opencv Mat container
 	uchar4_to_opencv(out_image,b.data());

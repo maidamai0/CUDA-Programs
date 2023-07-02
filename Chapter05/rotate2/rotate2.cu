@@ -74,9 +74,9 @@ int main(int argc,char *argv[])
 		rotate2<<<blocks,threads>>>(dev_b.data().get(),atex.tex,angle,nx,ny);
 	}
 
-	cx::ok(cudaGetLastError());
-	cx::ok(cudaDeviceSynchronize());
-	double t1 = tim.lap_ms();
+        cx::cudaOK(cudaGetLastError());
+        cx::cudaOK(cudaDeviceSynchronize());
+        double t1 = tim.lap_ms();
 
 	b = dev_b; // get results
 	cx::write_raw(argv[2],b.data(),size);

@@ -473,19 +473,19 @@ int main(int argc,char *argv[])
 		for(int r = rmin; r < rmax; r++) {
 			forward_project<<<blocks,threads>>>(dev_sm.data().get(),systab[r].start,systab[r].end,dev_vol.data().get(),r,dev_FP.data().get(),dzcut,valcut);
 		}
-		cx::ok(cudaDeviceSynchronize());
-		tim1.add();
+                cx::cudaOK(cudaDeviceSynchronize());
+                tim1.add();
 		tim2.start();
 
 		for(int r = rmin; r < rmax; r++) {
 			backward_project<<<blocks,threads>>>(dev_sm.data().get(),systab[r].start,systab[r].end,dev_meas.data().get(),r,dev_FP.data().get(),dev_BP.data().get(),dzcut,valcut);
 		}
-		cx::ok(cudaDeviceSynchronize());
-		tim2.add();
+                cx::cudaOK(cudaDeviceSynchronize());
+                tim2.add();
 		tim3.start();
 		rescale<<<blscale,thscale>>>(dev_vol.data().get(),dev_BP.data().get(),dev_norm.data().get());
-		cx::ok(cudaDeviceSynchronize());
-		tim3.add();
+                cx::cudaOK(cudaDeviceSynchronize());
+                tim3.add();
 		// save  progress
 		if ((iter+1)%snapsave == 0 && (iter+1) < niter) {
 			vol = dev_vol;
@@ -494,14 +494,14 @@ int main(int argc,char *argv[])
 			sprintf(name, "%s_cart%3.3d.raw", argv[2], iter+1);
 			pol_save(name, vol.data());
 		}
-		cx::ok(cudaDeviceSynchronize());
+                cx::cudaOK(cudaDeviceSynchronize());
 
-		tim4.start();
+                tim4.start();
 		float xhisd  = 0.0f;
 		if(usegold){
 			calc_chisd<<<blscale,thscale>>>(dev_vol.data().get(),dev_gold.data().get(),dev_chisd.data().get());
-			cx::ok(cudaDeviceSynchronize());
-			xhisd = thrust::reduce(dev_chisd.begin(),dev_chisd.end());
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        xhisd = thrust::reduce(dev_chisd.begin(),dev_chisd.end());
 		}
 		tim4.add();
 

@@ -157,8 +157,8 @@ int main(int argc,char *argv[])
 			gputiled<<<blocks,threads>>>(dev_C.data().get(),dev_A.data().get(),dev_B.data().get(),Arow,Acol,Bcol);
 		}
 		cudaDeviceSynchronize();
-		cx::ok(cudaGetLastError());
-		t2 = tim.lap_ms();
+                cx::cudaOK(cudaGetLastError());
+                t2 = tim.lap_ms();
 		C = dev_C; // D2H copy
 		if(show)show_mat("old GPU ",C.data(),16,16,Ccol);
 		//cx::write_raw("guptiled.raw",C.data(),Crow*Ccol);
@@ -173,8 +173,8 @@ int main(int argc,char *argv[])
 			matmulT<<<blocksT,threadsT>>>(dev_C.data().get(),dev_A.data().get(),dev_B.data().get(),Arow,Acol,Bcol);
 		}
 		cudaDeviceSynchronize();
-		cx::ok(cudaGetLastError());
-		t3 = tim.lap_ms();
+                cx::cudaOK(cudaGetLastError());
+                t3 = tim.lap_ms();
 		C = dev_C; // D2H copy
 		if(show)show_mat("new GPU ",C.data(),16,16,Ccol);
 	}

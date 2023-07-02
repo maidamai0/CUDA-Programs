@@ -64,8 +64,8 @@ int main(int argc,char *argv[])
 	int threads = (argc > 1) ? atoi(argv[1]) : 256;
 	threads = std::min(1024,threads);  // max thread block size is 1024
 
-	cx::ok(cudaSetDevice(0));  // Choose which GPU to run on
-	thrustHvec<int>   idata(threads); for(int k=0;k<threads;k++) idata[k] = k+1;
+        cx::cudaOK(cudaSetDevice(0));  // Choose which GPU to run on
+        thrustHvec<int>   idata(threads); for(int k=0;k<threads;k++) idata[k] = k+1;
 	thrustHvec<float> fdata(threads); for(int k=0;k<threads;k++) fdata[k] = (float)(k+1);
 	
 	int answer = (threads*(threads+1))/2;  // sum of integers n(n+1)/2
@@ -85,10 +85,10 @@ int main(int argc,char *argv[])
 
 	addSimple<int><<<1,threads>>>(dev_isum_simple.data().get(),dev_idata.data().get());
 
-	cx::ok(cudaGetLastError());
-	cx::ok(cudaDeviceSynchronize());
+        cx::cudaOK(cudaGetLastError());
+        cx::cudaOK(cudaDeviceSynchronize());
 
-	int   isum = dev_isum[0]; // get int result
+        int   isum = dev_isum[0]; // get int result
 	float fsum = dev_fsum[0]; // get float result
 
 	int ssum = dev_isum_simple[0]; // get non-atomic result

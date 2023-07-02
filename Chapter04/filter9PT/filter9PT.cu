@@ -54,9 +54,9 @@ int main(int argc,char *argv[])
 	for(int k=0;k<9;k++) c[k] = (argc > 8+k) ? atof(argv[8+k]) : 1.0;
 	uint size = nx*ny;
 
-	cx::ok(cudaSetDevice(0));  // Choose which GPU to run on
+        cx::cudaOK(cudaSetDevice(0));  // Choose which GPU to run on
 
-	thrustHvec<uchar> a(size);
+        thrustHvec<uchar> a(size);
 	thrustHvec<uchar> b(size);
 	thrustDvec<uchar> dev_a(size);
 	thrustDvec<uchar> dev_b(size);

@@ -431,33 +431,33 @@ int main(int argc,char *argv[])
 		for(int ostep=0;ostep<osteps;ostep++) {
 			clear_vector<float><<<blscale,thscale>>>(dev_FP.data().get(),lor_size);
 			clear_vector<float><<<blscale,thscale>>>(dev_BP.data().get(),vol_size);
-			//cx::ok(cudaDeviceSynchronize());
-			tim1.start();
+                        // cx::cudaOK(cudaDeviceSynchronize());
+                        tim1.start();
 			for(int r = radNum*ostep; r < radNum*(ostep+1); r++) {
 				forward_project<<<blocks,threads>>>(dev_sm.data().get(),systab[r].start,systab[r].end,dev_vol.data().get(),r%radNum,dev_FP.data().get(),dzcut,valcut);
-				//cx::ok(cudaDeviceSynchronize());
-			}
-			cx::ok(cudaDeviceSynchronize());
-			tim1.add();
+                                // cx::cudaOK(cudaDeviceSynchronize());
+                        }
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        tim1.add();
 			tim2.start();
 			for(int r = radNum*ostep; r < radNum*(ostep+1); r++) {
 				backward_project<<<blocks,threads>>>(dev_sm.data().get(),systab[r].start,systab[r].end,dev_meas.data().get(),r%radNum,dev_FP.data().get(),dev_BP.data().get(),dzcut,valcut);
 			}
-			cx::ok(cudaDeviceSynchronize());
-			tim2.add();
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        tim2.add();
 			tim3.start();
 			rescale<<<blscale,thscale>>>(dev_vol.data().get(),dev_BP.data().get(),dev_norm.data().get(),ostep);
-			cx::ok(cudaDeviceSynchronize());
-			tim3.add();
-			cx::ok(cudaDeviceSynchronize());
-			all.add();
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        tim3.add();
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        all.add();
 		}
 		tim4.start();
 		float xhisd = 0.0f;
 		if(usegold) {
 			calc_chisd<<<blscale, thscale>>>(dev_vol.data().get(), dev_gold.data().get(), dev_chisd.data().get());
-			cx::ok(cudaDeviceSynchronize());
-			xhisd = thrust::reduce(dev_chisd.begin(), dev_chisd.end());
+                        cx::cudaOK(cudaDeviceSynchronize());
+                        xhisd = thrust::reduce(dev_chisd.begin(), dev_chisd.end());
 		}
 		tim4.add();
 		all.add();

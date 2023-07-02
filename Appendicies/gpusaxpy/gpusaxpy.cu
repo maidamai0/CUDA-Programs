@@ -33,8 +33,8 @@ int main(int argc,char* argv[])
 
 	cx::timer tim;
 	gpusaxpy<<<blocks,threads>>>(dev_x.data().get(),dev_y.data().get(),a,size,reps);
-	cx::ok(cudaDeviceSynchronize());
-	double t1 = tim.lap_ms();
+        cx::cudaOK(cudaDeviceSynchronize());
+        double t1 = tim.lap_ms();
 	float gpu_check = dev_x[128];
 
 	double gflops = 2.0*(double)(size)*(double)reps/(t1*1000000);

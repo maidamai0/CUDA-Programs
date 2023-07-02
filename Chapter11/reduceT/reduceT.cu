@@ -239,8 +239,8 @@ int main(int argc,char *argv[])
 		reduceT<<<blocks,threads,32*threads>>>(dev_sums.data().get(),dev_data.data().get(),N);
 	}
 	cudaDeviceSynchronize();
-	cx::ok(cudaGetLastError());
-	sums = dev_sums;
+        cx::cudaOK(cudaGetLastError());
+        sums = dev_sums;
 	double TC_time = tim.lap_ms();
 
 	//---------------------------------------------------------
@@ -261,9 +261,9 @@ int main(int argc,char *argv[])
 		reduce_half_vl<<<blocks,threads>>>(dev_sums.data().get(),dev_data.data().get(),N);
 	}
 	cudaDeviceSynchronize();
-	cx::ok(cudaGetLastError());
+        cx::cudaOK(cudaGetLastError());
 
-	sums = dev_sums;
+        sums = dev_sums;
 	double gpu_time = tim.lap_ms();
 	//--------------------------end-------------------------------
 	

@@ -29,9 +29,11 @@ int main(int argc,char *argv[])
 	int gpu2 = 1;
 
 	// check for p2p access
-	int p2p_1to2; cx::ok( cudaDeviceCanAccessPeer(&p2p_1to2,gpu1,gpu2) ); 
-	int p2p_2to1; cx::ok( cudaDeviceCanAccessPeer(&p2p_2to1,gpu2,gpu1) );
-	if(p2p_1to2 == 0 || p2p_2to1 == 0) return 1;
+        int p2p_1to2;
+        cx::cudaOK(cudaDeviceCanAccessPeer(&p2p_1to2, gpu1, gpu2));
+        int p2p_2to1;
+        cx::cudaOK(cudaDeviceCanAccessPeer(&p2p_2to1, gpu2, gpu1));
+        if(p2p_1to2 == 0 || p2p_2to1 == 0) return 1;
 
 	cudaSetDevice(gpu1); cudaDeviceEnablePeerAccess(gpu2,0); // gpu2 can p2p with gpu1
 	cudaSetDevice(gpu2); cudaDeviceEnablePeerAccess(gpu1,0); // gpu1 can p2p with gpu2
