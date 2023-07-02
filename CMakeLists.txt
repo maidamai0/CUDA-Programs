@@ -14,7 +14,6 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/EHsc>")
   add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/Zc:__cplusplus>")
-  add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/fsanitize=address>")
 endif()
 add_compile_options("$<$<COMPILE_LANGUAGE:CCUDA>:--use_fast_math>")
 
@@ -22,7 +21,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 
 find_package(CUDAToolkit REQUIRED)
-link_libraries(CUDA::toolkit)
+link_libraries(CUDA::toolkit CUDA::cublas)
+
+
+find_package(OpenCV REQUIRED)
+include_directories( ${OpenCV_INCLUDE_DIRS})
+link_libraries(${OpenCV_LIBS})
 
 file(GLOB src_dirs CONFIGURE_DEPENDS Chapter* Appendicies)
 foreach(src_dir ${src_dirs})
