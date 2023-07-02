@@ -21,8 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 
 find_package(CUDAToolkit REQUIRED)
-link_libraries(CUDA::toolkit CUDA::cublas)
-
+link_libraries(CUDA::cublas CUDA::curand)
 
 find_package(OpenCV REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS})
